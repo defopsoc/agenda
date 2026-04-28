@@ -101,6 +101,27 @@
     .fc-button                { font-size: 0.82rem !important; padding: 0.35rem 0.75rem !important; }
     .fc-event                 { border-radius: 4px; font-size: 0.8rem; border: none !important; }
 
+    #rotate-msg {
+      display: none;
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      white-space: nowrap;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    @media (max-width: 640px) and (orientation: portrait) {
+      #rotate-msg { display: block; }
+    }
+
     @media (max-width: 640px) {
       body { padding: 1rem 0.5rem; }
 
@@ -142,6 +163,8 @@
     <span><span class="dot dot-occupe"></span> Occupé</span>
     <span><span class="dot dot-projet"></span> Projet / Mission</span>
   </div>
+
+  <div id="rotate-msg">↺ Tournez votre écran pour une meilleure vue</div>
 
   <div id="calendar-container">
     <div id="calendar"></div>
