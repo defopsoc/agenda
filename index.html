@@ -107,7 +107,7 @@
 
   <header>
     <h1>Mes disponibilités</h1>
-    <p>Calendrier mis à jour en temps réel — cliquez sur un événement pour plus de détails</p>
+    <p>Disponibilités de la semaine en cours · utilisez les boutons pour naviguer par jour, semaine ou mois</p>
   </header>
 
   <div class="legend">
@@ -134,7 +134,7 @@
 
       const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         locale           : 'fr',
-        initialView      : 'dayGridMonth',
+        initialView      : 'timeGridWeek',
         firstDay         : 1,
         height           : 'auto',
         headerToolbar    : {
