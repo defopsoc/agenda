@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda — defopsoc</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1100px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #f8fafc;
+      letter-spacing: 0.05em;
+    }
+
+    header p {
+      margin-top: 0.4rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    .legend {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-dispo  { background: #22c55e; }
+    .dot-occupe { background: #ef4444; }
+    .dot-projet { background: #3b82f6; }
+
+    #calendar-container {
+      width: 100%;
+      max-width: 1100px;
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+    }
+
+    /* FullCalendar overrides */
+    .fc {
+      --fc-border-color: #334155;
+      --fc-button-bg-color: #334155;
+      --fc-button-border-color: #475569;
+      --fc-button-hover-bg-color: #475569;
+      --fc-button-active-bg-color: #3b82f6;
+      --fc-button-active-border-color: #3b82f6;
+      --fc-today-bg-color: rgba(59,130,246,0.15);
+      --fc-page-bg-color: #1e293b;
+      --fc-neutral-bg-color: #1e293b;
+      color: #e2e8f0;
+    }
+
+    .fc .fc-toolbar-title     { color: #f8fafc; font-size: 1.1rem; }
+    .fc .fc-col-header-cell   { background: #0f172a; }
+    .fc .fc-daygrid-day-number { color: #94a3b8; }
+    .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number { color: #3b82f6; font-weight: 700; }
+    .fc-button                { font-size: 0.82rem !important; padding: 0.35rem 0.75rem !important; }
+    .fc-event                 { border-radius: 4px; font-size: 0.8rem; border: none !important; }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Mes disponibilités</h1>
+    <p>Calendrier mis à jour en temps réel — cliquez sur un événement pour plus de détails</p>
+  </header>
+
+  <div class="legend">
+    <span><span class="dot dot-dispo"></span> Disponible</span>
+    <span><span class="dot dot-occupe"></span> Occupé</span>
+    <span><span class="dot dot-projet"></span> Projet / Mission</span>
+  </div>
+
+  <div id="calendar-container">
+    <div id="calendar"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+
+      let events = [];
+
+      try {
+        const res = await fetch('agenda.json');
+        events = await res.json();
+      } catch (e) {
+        console.warn('Impossible de charger agenda.json :', e);
+      }
+
+      const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+        locale           : 'fr',
+        initialView      : 'dayGridMonth',
+        firstDay         : 1,
+        height           : 'auto',
+        headerToolbar    : {
+          left   : 'prev,next today',
+          center : 'title',
+          right  : 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText : {
+          today  : "Aujourd'hui",
+          month  : 'Mois',
+          week   : 'Semaine',
+          day    : 'Jour'
+        },
+        events     : events,
+        eventClick : function (info) {
+          const e = info.event;
+          alert(
+            e.title + '\n' +
+            'Du : ' + e.start.toLocaleString('fr-FR') + '\n' +
+            (e.end ? 'Au : ' + e.end.toLocaleString('fr-FR') : '')
+          );
+        }
+      });
+
+      calendar.render();
+    });
+  </script>
+
+</body>
+</html>
