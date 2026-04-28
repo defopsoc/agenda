@@ -100,6 +100,33 @@
     .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number { color: #3b82f6; font-weight: 700; }
     .fc-button                { font-size: 0.82rem !important; padding: 0.35rem 0.75rem !important; }
     .fc-event                 { border-radius: 4px; font-size: 0.8rem; border: none !important; }
+
+    @media (max-width: 640px) {
+      body { padding: 1rem 0.5rem; }
+
+      #calendar-container { padding: 0.75rem 0.4rem; border-radius: 8px; }
+
+      .legend { gap: 0.8rem; font-size: 0.78rem; flex-wrap: wrap; }
+
+      /* Toolbar : empile les 3 chunks verticalement */
+      .fc .fc-toolbar {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .fc .fc-toolbar-chunk { display: flex; justify-content: center; }
+
+      .fc-button {
+        font-size: 0.72rem !important;
+        padding: 0.25rem 0.45rem !important;
+      }
+
+      /* Réduire la largeur minimale des cellules pour timeGridDay */
+      .fc .fc-timegrid-slot { height: 2rem; }
+      .fc .fc-col-header-cell { font-size: 0.78rem; }
+      .fc .fc-toolbar-title   { font-size: 0.95rem; }
+    }
   </style>
 </head>
 
@@ -132,9 +159,11 @@
         console.warn('Impossible de charger agenda.json :', e);
       }
 
+      const isMobile = () => window.innerWidth <= 640;
+
       const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         locale           : 'fr',
-        initialView      : 'timeGridWeek',
+        initialView      : isMobile() ? 'timeGridDay' : 'timeGridWeek',
         firstDay         : 1,
         height           : 'auto',
         headerToolbar    : {
@@ -149,6 +178,9 @@
           day    : 'Jour'
         },
         events     : events,
+        windowResize : function () {
+          calendar.changeView(isMobile() ? 'timeGridDay' : 'timeGridWeek');
+        },
         eventClick : function (info) {
           const e = info.event;
           alert(
