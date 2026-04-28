@@ -163,7 +163,7 @@
 
       const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         locale           : 'fr',
-        initialView      : isMobile() ? 'timeGridDay' : 'timeGridWeek',
+        initialView      : isMobile() ? 'dayGridMonth' : 'timeGridWeek',
         firstDay         : 1,
         height           : 'auto',
         headerToolbar    : {
@@ -179,7 +179,7 @@
         },
         events     : events,
         windowResize : function () {
-          calendar.changeView(isMobile() ? 'timeGridDay' : 'timeGridWeek');
+          calendar.changeView(isMobile() ? 'dayGridMonth' : 'timeGridWeek');
         },
         eventClick : function (info) {
           const e = info.event;
