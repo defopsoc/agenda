@@ -101,25 +101,25 @@
     .fc-button                { font-size: 0.82rem !important; padding: 0.35rem 0.75rem !important; }
     .fc-event                 { border-radius: 4px; font-size: 0.8rem; border: none !important; }
 
-    #rotate-msg {
-      display: none;
-      position: fixed;
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      font-size: 0.82rem;
-      color: #94a3b8;
-      white-space: nowrap;
-      z-index: 9999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    /* Past days — grisé + barré */
+    .fc .fc-daygrid-day.fc-day-past {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .fc .fc-daygrid-day.fc-day-past .fc-daygrid-day-number {
+      color: #475569;
+      text-decoration: line-through;
+      text-decoration-color: #475569;
+    }
+    .fc .fc-daygrid-day.fc-day-past .fc-daygrid-day-number a {
+      color: #475569 !important;
+      text-decoration: line-through;
+      text-decoration-color: #475569;
     }
 
-    @media (max-width: 640px) and (orientation: portrait) {
-      #rotate-msg { display: block; }
+    /* Bouton prev désactivé visuellement quand bloqué */
+    .fc .fc-prev-button.fc-button-disabled {
+      opacity: 0.25;
+      pointer-events: none;
     }
 
     @media (max-width: 640px) {
@@ -129,7 +129,6 @@
 
       .legend { gap: 0.8rem; font-size: 0.78rem; flex-wrap: wrap; }
 
-      /* Toolbar : empile les 3 chunks verticalement */
       .fc .fc-toolbar {
         flex-direction: column;
         align-items: center;
@@ -143,7 +142,6 @@
         padding: 0.25rem 0.45rem !important;
       }
 
-      /* Réduire la largeur minimale des cellules pour timeGridDay */
       .fc .fc-timegrid-slot { height: 2rem; }
       .fc .fc-col-header-cell { font-size: 0.78rem; }
       .fc .fc-toolbar-title   { font-size: 0.95rem; }
@@ -164,8 +162,6 @@
     <span><span class="dot dot-projet"></span> Projet / Mission</span>
   </div>
 
-  <div id="rotate-msg">↺ Tournez votre écran pour une meilleure vue</div>
-
   <div id="calendar-container">
     <div id="calendar"></div>
   </div>
@@ -182,13 +178,16 @@
         console.warn('Impossible de charger agenda.json :', e);
       }
 
-      const isMobile = () => window.innerWidth <= 640;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayStr = today.toISOString().slice(0, 10);
 
       const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         locale           : 'fr',
         initialView      : 'dayGridMonth',
         firstDay         : 1,
         height           : 'auto',
+        validRange       : { start: todayStr },
         headerToolbar    : {
           left   : 'prev,next today',
           center : 'title',
@@ -201,8 +200,20 @@
           day    : 'Jour'
         },
         events     : events,
-        windowResize : function () {
-          calendar.changeView('dayGridMonth');
+        datesSet   : function () {
+          // Désactive le bouton prev si la vue commence avant ou à aujourd'hui
+          setTimeout(function () {
+            const prevBtn = document.querySelector('.fc-prev-button');
+            if (!prevBtn) return;
+            const start = calendar.view.activeStart;
+            const viewStart = new Date(start);
+            viewStart.setHours(0, 0, 0, 0);
+            if (viewStart <= today) {
+              prevBtn.classList.add('fc-button-disabled');
+            } else {
+              prevBtn.classList.remove('fc-button-disabled');
+            }
+          }, 50);
         },
         eventClick : function (info) {
           const e = info.event;
