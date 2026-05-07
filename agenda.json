@@ -8,13 +8,7 @@
   {
     "title" : "Disponible",
     "start" : "2026-05-22",
-    "end" : "2026-06-01",
-    "color" : "#22c55e"
-  },
-  {
-    "title" : "Occupé",
-    "start" : "2026-06-01",
     "end" : "2026-07-01",
-    "color" : "#ef4444"
+    "color" : "#22c55e"
   }
 ]
